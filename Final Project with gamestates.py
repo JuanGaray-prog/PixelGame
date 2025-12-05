@@ -54,35 +54,35 @@ score_player1 = 0
 score_player2 = 0
 
 #Import images
-winner_screen = pygame.image.load("Data/Winner.png").convert_alpha()
+winner_screen = pygame.image.load("Winner.png").convert_alpha()
 winner_screen = pygame.transform.scale(winner_screen, (cells_size*cells_number, cells_size*cells_number))
 winner_screen_rect = winner_screen.get_rect(center = (cells_size*cells_number//2, cells_size*cells_number//2))
 
-apple = pygame.image.load("Data/Manzana.png").convert_alpha()
+apple = pygame.image.load("Manzana.png").convert_alpha()
 apple_screen = pygame.transform.scale(apple, (cells_size,cells_size))
 
-menu = pygame.image.load("Data/Menu.png").convert_alpha()
+menu = pygame.image.load("Menu.png").convert_alpha()
 menu_screen = pygame.transform.scale(menu, (cells_size*cells_number, cells_size*cells_number))
 menu_rect = menu_screen.get_rect(center = (cells_size*cells_number//2, cells_size*cells_number//2))
 
-play = pygame.image.load("Data/Play.png").convert_alpha()
+play = pygame.image.load("Play.png").convert_alpha()
 play = pygame.transform.scale(play, (cells_size*10, cells_size*3))
 play_rect = play.get_rect(center = (cells_size*cells_number//2, cells_size*cells_number//2.5))
 
-exit = pygame.image.load("Data/Salir.png")
+exit = pygame.image.load("Salir.png")
 exit = pygame.transform.scale(exit, (cells_size*10, cells_size*3))
 exit_rect = exit.get_rect(center = (cells_size*cells_number//2, cells_size*cells_number//1.5))
 
 #Difficulty
-easy = pygame.image.load("Data/Easy.jpeg").convert_alpha()
+easy = pygame.image.load("Easy.jpeg").convert_alpha()
 easy = pygame.transform.scale(easy, (cells_size*10, cells_size*3))
 easy_rect = easy.get_rect(center = (cells_size*cells_number//2, cells_size*cells_number//3))
 
-medium = pygame.image.load("Data/Medium.jpeg").convert_alpha()
+medium = pygame.image.load("Medium.jpeg").convert_alpha()
 medium = pygame.transform.scale(medium, (cells_size*10, cells_size*3))
 medium_rect = medium.get_rect(center = (cells_size*cells_number//2, cells_size*cells_number//2.0))
 
-hard = pygame.image.load("Data/Hard.jpeg").convert_alpha()
+hard = pygame.image.load("Hard.jpeg").convert_alpha()
 hard = pygame.transform.scale(hard,(cells_size*10, cells_size*3))
 hard_rect = hard.get_rect(center = (cells_size*cells_number//2, cells_size*cells_number//1.5))
 
@@ -276,3 +276,4 @@ while running:
 
     pygame.display.update()
     clock.tick(tick)
+
