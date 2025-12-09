@@ -18,8 +18,10 @@ screen = pygame.display.set_mode((cells_size*cells_number,cells_size*cells_numbe
 pygame.display.set_caption("Game Name")
 clock = pygame.time.Clock()
 
-#light green
-light_green = (168,210,62)
+#light blue
+light_blue = (168,210,62)
+Blue1 = (10, 10, 80)
+Blue2 = (30, 30, 100)
 
 #Player Position
 number_x = random.randint(1,cells_number-1)
@@ -53,7 +55,32 @@ game_font = pygame.font.Font(None, 60)
 score_player1 = 0
 score_player2 = 0
 
-#Import images
+#Import Images players
+# 1.head
+img_head = pygame.image.load("Head.png").convert_alpha()
+img_head = pygame.transform.scale(img_head, (cells_size, cells_size))
+img_head1 = pygame.image.load("Head_red.png").convert_alpha()
+img_head1 = pygame.transform.scale(img_head1, (cells_size, cells_size))
+
+# 2.body
+img_body = pygame.image.load("Body.jpg").convert_alpha()
+img_body = pygame.transform.scale(img_body, (cells_size, cells_size))
+img_body1 = pygame.image.load("Body_red.jpg").convert_alpha()
+img_body1 = pygame.transform.scale(img_body1, (cells_size, cells_size))
+
+# 3.body curve
+img_corner = pygame.image.load("Body_curve.png").convert_alpha()
+img_corner = pygame.transform.scale(img_corner, (cells_size, cells_size))
+img_corner1 = pygame.image.load("Body_curve_red.png").convert_alpha()
+img_corner1 = pygame.transform.scale(img_corner1, (cells_size, cells_size))
+
+# 4.tail
+img_tail = pygame.image.load("Tail.png").convert_alpha()
+img_tail = pygame.transform.scale(img_tail, (cells_size, cells_size))
+img_tail1 = pygame.image.load("Tail_red.png").convert_alpha()
+img_tail1 = pygame.transform.scale(img_tail1, (cells_size, cells_size))
+
+# Import images (Menú y Manzana)
 winner_screen = pygame.image.load("Winner.png").convert_alpha()
 winner_screen = pygame.transform.scale(winner_screen, (cells_size*cells_number, cells_size*cells_number))
 winner_screen_rect = winner_screen.get_rect(center = (cells_size*cells_number//2, cells_size*cells_number//2))
@@ -73,6 +100,7 @@ exit = pygame.image.load("Salir.png")
 exit = pygame.transform.scale(exit, (cells_size*10, cells_size*3))
 exit_rect = exit.get_rect(center = (cells_size*cells_number//2, cells_size*cells_number//1.5))
 
+
 #Difficulty
 easy = pygame.image.load("Easy.jpeg").convert_alpha()
 easy = pygame.transform.scale(easy, (cells_size*10, cells_size*3))
@@ -85,8 +113,6 @@ medium_rect = medium.get_rect(center = (cells_size*cells_number//2, cells_size*c
 hard = pygame.image.load("Hard.jpeg").convert_alpha()
 hard = pygame.transform.scale(hard,(cells_size*10, cells_size*3))
 hard_rect = hard.get_rect(center = (cells_size*cells_number//2, cells_size*cells_number//1.5))
-
-    
 
 running = True
 
@@ -108,6 +134,80 @@ gamestate = ""
 #Snake Body
 snake = [[x,y]]
 snake1 = [[x1,y1]]
+
+def draw_snake(surface, snake_list, img_head, img_body, img_corner, img_tail):
+    if len(snake_list) < 2:
+        return
+
+    def get_vector(b_origin, b_destination):
+        dx = b_destination[0] - b_origin[0]
+        dy = b_destination[1] - b_origin[1]
+        
+        if dx > cells_size: dx = -cells_size
+        elif dx < -cells_size: dx = cells_size
+        if dy > cells_size: dy = -cells_size
+        elif dy < -cells_size: dy = cells_size
+        return dx, dy
+
+    for index, block in enumerate(snake_list):
+        x = block[0]
+        y = block[1]
+        block_rect = pygame.Rect(x, y, cells_size, cells_size)
+
+        # 1. head(Último elemento)
+        if index == len(snake_list) - 1:
+            prev_block = snake_list[index - 1]
+            dx, dy = get_vector(prev_block, block)
+
+            if dx > 0:   img = pygame.transform.rotate(img_head, 90)  
+            elif dx < 0: img = pygame.transform.rotate(img_head, 270) 
+            elif dy > 0: img = pygame.transform.rotate(img_head, 0)
+            elif dy < 0: img = pygame.transform.rotate(img_head, 180)  
+            else: img = img_head        
+            surface.blit(img, block_rect)
+
+        # 2. tail (Primer elemento)
+        elif index == 0:
+            next_block = snake_list[index + 1] 
+            dx, dy = get_vector(block, next_block) 
+
+            if dx > 0: img = pygame.transform.rotate(img_tail, 180) 
+            elif dx < 0: img = pygame.transform.rotate(img_tail, 0)   
+            elif dy > 0: img = pygame.transform.rotate(img_tail, 90) 
+            elif dy < 0: img = pygame.transform.rotate(img_tail, 270)  
+            else: img = img_tail         
+            surface.blit(img, block_rect)
+
+        #3. body and corner
+        else:
+            prev_block = snake_list[index - 1]
+            next_block = snake_list[index + 1]          
+            
+            #vector
+            dx_prev, dy_prev = get_vector(block, prev_block)
+            dx_next, dy_next = get_vector(block, next_block)
+            #1. horizontal straight line
+            if dx_prev != 0 and dx_next != 0:
+                surface.blit(img_body, block_rect)
+            
+            #2. vertical straight line
+            elif dy_prev != 0 and dy_next != 0:
+                surface.blit(pygame.transform.rotate(img_body, 90), block_rect)
+
+            # corner
+            else:
+                # From LEFT to UP (or UP to LEFT)
+                if (dx_prev == -cells_size and dy_next == -cells_size) or (dx_next == -cells_size and dy_prev == -cells_size):
+                    surface.blit(pygame.transform.rotate(img_corner, 180), block_rect)
+                # From LEFT to DOWN (or DOWN to LEFT)
+                elif (dx_prev == -cells_size and dy_next == cells_size) or (dx_next == -cells_size and dy_prev == cells_size):
+                    surface.blit(pygame.transform.rotate(img_corner, 270), block_rect)
+                # From RIGHT to UP (or UP to RIGHT)
+                elif (dx_prev == cells_size and dy_next == -cells_size) or (dx_next == cells_size and dy_prev == -cells_size):
+                    surface.blit(pygame.transform.rotate(img_corner, 90), block_rect)
+                # From RIGHT to DOWN (or DOWN to RIGHT)
+                elif (dx_prev == cells_size and dy_next == cells_size) or (dx_next == cells_size and dy_prev == cells_size):
+                    surface.blit(pygame.transform.rotate(img_corner, 0), block_rect)
 
 while running:
     mouse_pos = pygame.mouse.get_pos()
@@ -200,27 +300,26 @@ while running:
         snake1.append([x1,y1])
         snake.append([x,y])
 
-        screen.fill((20, 230, 70))
+        screen.fill((Blue1))
 
         for rows in range(cells_number):
             if not rows%2:
                 for columns in range(cells_number):
                     if not columns%2:
                         pasto_rect = pygame.Rect(columns * cells_size, rows*cells_size, cells_size, cells_size)
-                        pygame.draw.rect(screen, "green", pasto_rect)
+                        pygame.draw.rect(screen, Blue2, pasto_rect)
             else:
                 for columns in range(cells_number):
                     if columns%2:
                         pasto_rect = pygame.Rect(columns * cells_size, rows*cells_size, cells_size, cells_size)
-                        pygame.draw.rect(screen, "green", pasto_rect)                    
+                        pygame.draw.rect(screen, Blue2, pasto_rect)                    
 
+        #draw player 1
+        draw_snake(screen, snake, img_head, img_body, img_corner, img_tail)
 
-        #PLAYER 1
-        for segmento in snake:
-            pygame.draw.rect(screen, "blue", (segmento[0], segmento[1], cells_size, cells_size))
-        #PLAYER 2
-        for segmento in snake1:
-            pygame.draw.rect(screen, "red", (segmento[0],segmento[1], cells_size, cells_size))
+        #draw player 2
+        draw_snake(screen, snake1, img_head1, img_body1, img_corner1, img_tail1)
+
 
         #Apple
         if x == apx and y == apy:
@@ -249,10 +348,20 @@ while running:
     elif gamestate == "win_player1":
         screen.fill("black")
         screen.blit(winner_screen, winner_screen_rect)
+        #message win
+        win_text = game_font.render("¡Ganaste Jugador 1!", True, (0, 255, 0)) 
+        #center text
+        win_text_rect = win_text.get_rect(center = (cells_size*cells_number//2, cells_size*cells_number//1.1))
+        screen.blit(win_text, win_text_rect)
     
     elif gamestate == "win_player2":
         screen.fill("black")
         screen.blit(winner_screen, winner_screen_rect)
+        #message win
+        win_text = game_font.render("¡Ganaste Jugador 2!", True, (255, 0, 0)) 
+        #center text
+        win_text_rect = win_text.get_rect(center = (cells_size*cells_number//2, cells_size*cells_number//1.1))
+        screen.blit(win_text, win_text_rect)
 
     elif gamestate == "option":
 
@@ -276,4 +385,3 @@ while running:
 
     pygame.display.update()
     clock.tick(tick)
-
