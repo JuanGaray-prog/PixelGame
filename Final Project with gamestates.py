@@ -349,7 +349,7 @@ while running:
         screen.fill("black")
         screen.blit(winner_screen, winner_screen_rect)
         #message win
-        win_text = game_font.render("¡Ganaste Jugador 1!", True, (0, 255, 0)) 
+        win_text = game_font.render("¡Jugador 1!", True, (0, 255, 0)) 
         #center text
         win_text_rect = win_text.get_rect(center = (cells_size*cells_number//2, cells_size*cells_number//1.1))
         screen.blit(win_text, win_text_rect)
@@ -358,7 +358,7 @@ while running:
         screen.fill("black")
         screen.blit(winner_screen, winner_screen_rect)
         #message win
-        win_text = game_font.render("¡Ganaste Jugador 2!", True, (255, 0, 0)) 
+        win_text = game_font.render("¡Jugador 2!", True, (255, 0, 0)) 
         #center text
         win_text_rect = win_text.get_rect(center = (cells_size*cells_number//2, cells_size*cells_number//1.1))
         screen.blit(win_text, win_text_rect)
@@ -385,3 +385,4 @@ while running:
 
     pygame.display.update()
     clock.tick(tick)
+
