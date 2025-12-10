@@ -325,9 +325,11 @@ while running:
         if x == apx and y == apy:
             apx, apy = apple_position()
             score_player1 += 1
+            tick += 1
         elif x1 == apx and y1 == apy:
             apx, apy = apple_position()
             score_player2 += 1
+            tick += 1
         else:
             apple_rect = apple_screen.get_rect(topleft = (apx, apy))
             screen.blit(apple_screen,apple_rect)
@@ -385,4 +387,5 @@ while running:
 
     pygame.display.update()
     clock.tick(tick)
+
 
